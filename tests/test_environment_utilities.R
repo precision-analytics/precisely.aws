@@ -4,15 +4,11 @@ library(precisely.aws)
 
 # Need to source the file itself to get to internal functions
 tryCatch({
-  source("../R/environment_utilities.R")
+  source( "../R/environment_utilities.R")
 },
 warning = function(cond) {
-  source("R/environment_utilities.R")
-},
-error = function(cond) {
-  source("R/environment_utilities.R")
-}
-)
+  source( "../00_pkg_src/precisely.aws/R/environment_utilities.R")
+})
 
 
 test_that("instance metadata check is false for default url", {

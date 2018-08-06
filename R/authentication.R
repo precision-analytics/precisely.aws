@@ -1,6 +1,9 @@
 library("httr")
 library("jsonlite")
 
+
+# Gets the instance metadata URL for a given IAM role. This function only
+# generates the URL, you must query it separately to verify if the role exists.
 internal.GetURLForRole <- function(role) {
   baseURL <- "http://169.254.169.254/latest/meta-data/iam/security-credentials/"
   roleURL <- paste(baseURL, role, sep = "")
@@ -8,6 +11,11 @@ internal.GetURLForRole <- function(role) {
 }
 
 
+# Sets environmental variables for:
+#   AWS_ACCESS_KEY_ID
+#   AWS_SECRET_ACCESS_KEY
+#
+# These are standard, used by the aws cli tools and other libraries like cloudyr
 internal.SetAWSEnvironmentVariables <- function(accessKey, secretKey) {
   emptyString <- function(string) {
     if (string == "" || is.null(string) || is.na(string)) {
@@ -24,6 +32,8 @@ internal.SetAWSEnvironmentVariables <- function(accessKey, secretKey) {
 }
 
 
+# Fetches and sets access keys from ~/.aws/credentials. Uses the first
+# keypair found.
 internal.GetAndSetLocalKeys <- function() {
   path <- "~/.aws/credentials"
   keys <- read.delim(path, header = FALSE, sep = "=", skip = 1)
@@ -38,8 +48,6 @@ internal.GetAndSetLocalKeys <- function() {
   }
 }
 
-
-internal.GetAndSetLocalKeys()
 
 #' Fetches and sets access keys for a given IAM role. Role must be authorized
 #' with the EC2 instance. Keys are set as environment variables.

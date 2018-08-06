@@ -4,15 +4,11 @@ library(precisely.aws)
 
 # Need to source the file itself to get to internal functions
 tryCatch({
-  source("../R/authentication.R")
+  source( "../R/authentication.R")
 },
 warning = function(cond) {
-  source("R/authentication.R")
-},
-error = function(cond) {
-  source("R/authentication.R")
-}
-)
+  source( "../00_pkg_src/precisely.aws/R/authentication.R")
+})
 
 
 test_that("role URL gets properly generated", {
