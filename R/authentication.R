@@ -56,7 +56,7 @@ internal.GetAndSetLocalKeys <- function() {
 #'
 #' @param role The IAM Role to assume.
 precisely.aws.IAM.AssumeRole <- function(role) {
-  if (!precisely.aws.isEC2) {
+  if (precisely.aws.isEC2) {
     response <- httr:GET(internal.GetURLForRole(role), timeout(4))
 
     if (httr::status_code(response) != 200) {
