@@ -26,7 +26,7 @@ precisely.aws.SecretsManager.getSecretValue <- function(secretId, versionId, ver
       stop("aws command not found, failing")
     },
     warning = function (cond) {
-      stop("failed to run aws command:\n", cond)
+      stop("failed to run aws command, verify secret name")
     }
   )
 
