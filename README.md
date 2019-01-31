@@ -28,7 +28,26 @@ disregard the provided role name and attempt to load keys from the standard AWS 
 
 - `~/.aws/credentials`
 
+### AWS Secrets Manager
 
+Storing secrets in [AWS Secrets Manager] allows for secure distribution of sensitive information, such as database access credentials. The contents of an existing secret can be retrieved using the [AWS CLI]. 
+
+```
+precisely.aws.SecretsManager.getSecretValue(secretName)
+```
+
+This will fetch the secret value, parse the output returned by the [AWS CLI], and returned the parsed JSON of the SecretString (i.e. the contents of the secret). 
+
+For example, to retrieve the username and password stored in a secret with the name "example/secret", execute the following code: 
+
+```
+library(precisely.aws)
+secretContents <- precisely.aws.SecretsManager.getSecretValue("example/secret")
+secretContents$username # The username
+secretContents$password # The password
+```
 
 [instance profile]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html
 [instance metadata]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html#instance-metadata-security-credentials
+[AWS Secrets Manager]: https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_create-basic-secret.html
+[AWS CLI]: https://docs.aws.amazon.com/cli/latest/reference/
