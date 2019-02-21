@@ -20,13 +20,14 @@ precisely.aws.SecretsManager.getSecretValue <- function(secretId, versionId, ver
       if (!missing(versionStage)) {
         args <- c(args, "--version-stage", versionStage)
       }
-      system2("aws", args = args, stdout = TRUE)
+      system2("aws", args = args, stdout = TRUE, stderr = "./error.log")
     },
     error = function (cond) {
       stop("aws command not found, failing")
     },
     warning = function (cond) {
-      stop("failed to run aws command, verify secret name")
+      error_msg <- readr::read_lines("./error.log", skip_empty_rows = TRUE)
+      stop(error_msg)
     }
   )
 
