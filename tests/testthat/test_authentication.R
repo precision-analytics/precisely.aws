@@ -1,10 +1,8 @@
-
-library(testthat)
-library(precisely.aws)
+context("Authentication")
 
 # Need to source the file itself to get to internal functions
 tryCatch({
-  source( "../R/authentication.R")
+  source( "../../R/authentication.R")
 },
 warning = function(cond) {
   source( "../00_pkg_src/precisely.aws/R/authentication.R")
@@ -38,4 +36,6 @@ test_that("empty keys do not get set", {
   expect_equal(Sys.getenv("AWS_SECRET_ACCESS_KEY"), "secret_key")
 })
 
-
+# Clear the environment variables
+Sys.unsetenv("AWS_ACCESS_KEY_ID")
+Sys.unsetenv("AWS_SECRET_ACCESS_KEY")

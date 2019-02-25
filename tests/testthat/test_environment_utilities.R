@@ -1,10 +1,8 @@
-
-library(testthat)
-library(precisely.aws)
+context("Environment Utilities")
 
 # Need to source the file itself to get to internal functions
 tryCatch({
-  source( "../R/environment_utilities.R")
+  source( "../../R/environment_utilities.R")
 },
 warning = function(cond) {
   source( "../00_pkg_src/precisely.aws/R/environment_utilities.R")
