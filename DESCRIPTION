@@ -2,7 +2,7 @@ Title: Precisely AWS Utilities
 Author: Precision Analytics
 Maintainer: Chris Baltzer <chris@precision-analytics.ca>
 Package: precisely.aws
-Version: 0.1.0
+Version: 0.2.0
 Description: Provides utilities for various tasks related to AWS and running 
     on EC2. 
 Type: Package
