@@ -11,6 +11,8 @@ library(jsonlite)
 #' @param versionStage The staging label attached to the version of the secret to retrieve (optional).
 #' @return list of the parsed JSON of the SecretString
 precisely.aws.SecretsManager.getSecretValue <- function(secretId, versionId, versionStage) {
+  error_log <- paste0(tempdir(), "error.log")
+
   output <- tryCatch(
     {
       args <- c("secretsmanager", "get-secret-value", "--secret-id", secretId)
@@ -20,13 +22,13 @@ precisely.aws.SecretsManager.getSecretValue <- function(secretId, versionId, ver
       if (!missing(versionStage)) {
         args <- c(args, "--version-stage", versionStage)
       }
-      system2("aws", args = args, stdout = TRUE, stderr = "./error.log")
+      system2("aws", args = args, stdout = TRUE, stderr = error_log)
     },
     error = function (cond) {
       stop("aws command not found, failing")
     },
     warning = function (cond) {
-      error_msg <- readr::read_lines("./error.log", skip_empty_rows = TRUE)
+      error_msg <- readr::read_lines(error_log, skip_empty_rows = TRUE)
       stop(error_msg)
     }
   )
