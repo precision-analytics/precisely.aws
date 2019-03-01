@@ -7,24 +7,12 @@ library(jsonlite)
 #'
 #' @return A character vector of the usernames of the users in the group.
 precisely.aws.CognitoIdp.getUsersInGroup <- function(userPoolId, groupName) {
-  error_log <- paste0(tempdir(), "error.log")
+  args <- c("cognito-idp",
+            "list-users-in-group",
+            "--user-pool-id", userPoolId,
+            "--group-name", groupName)
 
-  output <- tryCatch(
-    {
-      args <- c("cognito-idp",
-                "list-users-in-group",
-                "--user-pool-id", userPoolId,
-                "--group-name", groupName)
-      system2("aws", args = args, stdout = TRUE, stderr = error_log)
-    },
-    error = function (cond) {
-      stop("aws command not found, failing")
-    },
-    warning = function (cond) {
-      error_msg <- readr::read_lines(error_log, skip_empty_rows = TRUE)
-      stop(error_msg)
-    }
-  )
+  output <- execute_aws_cmd(args)
 
   jsonOutput <- tryCatch(
     {
