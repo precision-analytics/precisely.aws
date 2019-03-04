@@ -1,3 +1,7 @@
+library(dplyr)
+library(tibble)
+library(tidyr)
+
 #' Copy a local file to an S3 object.
 #'
 #' @param file The name of, or full path to, the file to upload.
@@ -43,6 +47,8 @@ precisely.aws.S3.delete_object <- function(object, bucket) {
 #' @param recursive If TRUE, will recursively list objects in a bucket.
 #' That is, rather than showing PRE dirname/ in the output, all the content in a bucket will be
 #' listed in order. Optional, default is TRUE.
+#'
+#' @return A tibble of the objects in the bucket and their associated file information.
 precisely.aws.S3.list_objects <- function(bucket, recursive = TRUE) {
   args <- c("s3", "ls", paste0("s3://", bucket), "--human-readable")
 
@@ -50,5 +56,20 @@ precisely.aws.S3.list_objects <- function(bucket, recursive = TRUE) {
     args <- c(args, "--recursive")
   }
 
-  execute_aws_cmd(args)
+  file_list <- execute_aws_cmd(args)
+  if (!identical(file_list, character(0))) {
+    file_props <- sapply(file_list, function(x) strsplit(x, split = "\\s+"))
+    bind_cols(file_props) %>%
+      rownames_to_column() %>%
+      gather(var, value, -rowname) %>%
+      spread(rowname, value) %>%
+      select(-var) %>%
+      rename(last_write_date = `1`,
+             last_write_time = `2`,
+             size = `3`,
+             size_unit = `4`,
+             file_name = `5`)
+  } else {
+    NULL
+  }
 }
