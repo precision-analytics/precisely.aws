@@ -1,9 +1,7 @@
-library("httr")
-library("jsonlite")
-
-
-# Gets the instance metadata URL for a given IAM role. This function only
-# generates the URL, you must query it separately to verify if the role exists.
+#' Gets the instance metadata URL for a given IAM role. This function only
+#' generates the URL, you must query it separately to verify if the role exists.
+#'
+#' @keywords internal
 internal.GetURLForRole <- function(role) {
   baseURL <- "http://169.254.169.254/latest/meta-data/iam/security-credentials/"
   roleURL <- paste(baseURL, role, sep = "")
@@ -11,11 +9,13 @@ internal.GetURLForRole <- function(role) {
 }
 
 
-# Sets environmental variables for:
-#   AWS_ACCESS_KEY_ID
-#   AWS_SECRET_ACCESS_KEY
-#
-# These are standard, used by the aws cli tools and other libraries like cloudyr
+#' Sets environmental variables for:
+#'   AWS_ACCESS_KEY_ID
+#'   AWS_SECRET_ACCESS_KEY
+#'
+#' These are standard, used by the aws cli tools and other libraries like cloudyr
+#'
+#' @keywords internal
 internal.SetAWSEnvironmentVariables <- function(accessKey, secretKey) {
   emptyString <- function(string) {
     if (string == "" || is.null(string) || is.na(string)) {
@@ -32,8 +32,10 @@ internal.SetAWSEnvironmentVariables <- function(accessKey, secretKey) {
 }
 
 
-# Fetches and sets access keys from ~/.aws/credentials. Uses the first
-# keypair found.
+#' Fetches and sets access keys from ~/.aws/credentials. Uses the first
+#' keypair found.
+#'
+#' @keywords internal
 internal.GetAndSetLocalKeys <- function() {
   path <- "~/.aws/credentials"
   keys <- read.delim(path, header = FALSE, sep = "=", skip = 1)
@@ -54,15 +56,20 @@ internal.GetAndSetLocalKeys <- function() {
 #'
 #' @seealso https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html?shortFooter=true#instance-metadata-security-credentials
 #'
+#' @export
+#'
 #' @param role The IAM Role to assume.
+#'
+#' @importFrom httr content GET status_code
+#' @importFrom jsonlite fromJSON
 precisely.aws.IAM.AssumeRole <- function(role) {
   if (precisely.aws.isEC2) {
-    response <- httr:GET(internal.GetURLForRole(role), timeout(4))
+    response <- GET(internal.GetURLForRole(role), timeout(4))
 
-    if (httr::status_code(response) != 200) {
+    if (status_code(response) != 200) {
       stop("IAM role not found or not authorized")
     } else {
-      metadata <- jsonlite::fromJSON(httr::content(response, "text", encoding = "UTF-8"))
+      metadata <- fromJSON(content(response, "text", encoding = "UTF-8"))
 
       accessKey = metadata$AccessKeyId
       secretKey = metadata$SecretAccessKey
