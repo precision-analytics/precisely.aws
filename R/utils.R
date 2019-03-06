@@ -11,6 +11,11 @@ execute_aws_cmd <- function(args) {
     warning = function (cond) {
       error_msg <- readr::read_lines(error_log, skip_empty_rows = TRUE)
       stop(error_msg)
+    },
+    finally = {
+      if (file.exists(error_log)) {
+        file.remove(error_log)
+      }
     }
   )
 }

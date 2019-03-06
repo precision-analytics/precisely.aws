@@ -4,14 +4,15 @@
 \alias{precisely.aws.S3.put_object}
 \title{Copy a local file to an S3 object.}
 \usage{
-precisely.aws.S3.put_object(file, object, bucket)
+precisely.aws.S3.put_object(path, object, bucket)
 }
 \arguments{
-\item{file}{The name of, or full path to, the file to upload.}
+\item{path}{The relative or full path to the file or directory to upload.}
 
-\item{object}{The name the object should have in S3 (optional, defaults to the file name).}
+\item{object}{If \code{path} is a file, the name the object should have in S3
+(optional, defaults to the file name).}
 
-\item{bucket}{The name of the S3 bucket to create the object in.}
+\item{bucket}{The name of the S3 bucket to create the object(s) in.}
 }
 \value{
 A character vector containing the success message.
