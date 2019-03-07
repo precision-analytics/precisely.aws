@@ -9,9 +9,12 @@ Type: Package
 License: Commercial
 Encoding: UTF-8
 Imports: 
+    dplyr,
     httr,
     jsonlite,
     testthat,
+    tibble,
+    tidyr,
     utils
 LazyData: true
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1

@@ -6,8 +6,8 @@ test_that("test file is successfully uploaded", {
 })
 
 test_that("test file appears in bucket list", {
-  expect_match(precisely.aws.S3.list_objects("precisely-aws-test"),
-                   ".*s3_test_file.txt")
+  objects_tbl <- precisely.aws.S3.list_objects("precisely-aws-test")
+  expect_identical(objects_tbl$file_name, "s3_test_file.txt")
 })
 
 test_that("test file is successfully downloaded", {
@@ -21,6 +21,5 @@ test_that("test file is successfully downloaded", {
 test_that("test file is successfully deleted", {
   expect_identical(precisely.aws.S3.delete_object("s3_test_file.txt", "precisely-aws-test"),
                    "delete: s3://precisely-aws-test/s3_test_file.txt")
-  expect_identical(precisely.aws.S3.list_objects("precisely-aws-test"),
-                   character(0))
+  expect_null(precisely.aws.S3.list_objects("precisely-aws-test"))
 })
