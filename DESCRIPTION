@@ -11,6 +11,7 @@ Encoding: UTF-8
 Imports: 
     httr,
     jsonlite,
-    testthat
+    testthat,
+    utils
 LazyData: true
 RoxygenNote: 6.1.0
