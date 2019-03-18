@@ -35,7 +35,6 @@ test_that("test file is successfully uploaded with prefix", {
 
 test_that("test file appears in bucket list with prefix", {
   objects_tbl <- precisely.aws.S3.list_objects("precisely-aws-test", prefix = "prefix_test")
-  print(objects_tbl)
   expect_identical(objects_tbl$file_name, "prefix_test/s3_test_file.txt")
 })
 
