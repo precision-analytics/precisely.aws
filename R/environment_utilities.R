@@ -7,7 +7,7 @@
 #'
 #' @return Returns TRUE if the URL request succeeds, otherwise FALSE
 #'
-#' @importFrom httr GET
+#' @importFrom httr GET timeout
 #'
 #' @keywords internal
 internal.IsEC2 <- function(url="http://169.254.169.254/latest/dynamic/instance-identity/") {

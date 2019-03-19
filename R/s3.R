@@ -2,17 +2,24 @@
 #'
 #' @export
 #'
-#' @param file The name of, or full path to, the file to upload.
-#' @param object The name the object should have in S3 (optional, defaults to the file name).
-#' @param bucket The name of the S3 bucket to create the object in.
+#' @param path The relative or full path to the file or directory to upload.
+#' @param object If \code{path} is a file, the name the object should have in S3
+#' (optional, defaults to the file name).
+#' @param bucket The name of the S3 bucket to create the object(s) in.
 #'
 #' @return A character vector containing the success message.
-precisely.aws.S3.put_object <- function(file, object, bucket) {
+precisely.aws.S3.put_object <- function(path, object, bucket) {
   if (missing(object)) {
-    object <- basename(file)
+    object <- basename(path)
   }
 
-  args <- c("s3", "cp", file, paste0("s3://", bucket, "/", object), "--no-progress")
+  args <- c("s3", "cp", path)
+
+  if (dir.exists(path)) {
+    args <- c(args, paste0("s3://", bucket, "/"), "--recursive", "--no-progress")
+  } else {
+    args <- c(args, paste0("s3://", bucket, "/", object), "--no-progress")
+  }
 
   execute_aws_cmd(args)
 }
