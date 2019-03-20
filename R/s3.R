@@ -6,19 +6,26 @@
 #' @param object If \code{path} is a file, the name the object should have in S3
 #' (optional, defaults to the file name).
 #' @param bucket The name of the S3 bucket to create the object(s) in.
+#' @param prefix The prefix to use for the file in the S3 bucket (optional).
 #'
 #' @return A character vector containing the success message.
-precisely.aws.S3.put_object <- function(path, object, bucket) {
+precisely.aws.S3.put_object <- function(path, object, bucket, prefix = NULL) {
   if (missing(object)) {
     object <- basename(path)
   }
 
   args <- c("s3", "cp", path)
 
+  s3_path <- paste0("s3://", bucket, "/")
+
+  if (!is.null(prefix)) {
+    s3_path <- paste0(s3_path, prefix, "/")
+  }
+
   if (dir.exists(path)) {
-    args <- c(args, paste0("s3://", bucket, "/"), "--recursive", "--no-progress")
+    args <- c(args, s3_path, "--recursive", "--no-progress")
   } else {
-    args <- c(args, paste0("s3://", bucket, "/", object), "--no-progress")
+    args <- c(args, paste0(s3_path, object), "--no-progress")
   }
 
   execute_aws_cmd(args)
@@ -32,10 +39,17 @@ precisely.aws.S3.put_object <- function(path, object, bucket) {
 #' @param object The name of the S3 object to download.
 #' @param bucket The name of the S3 bucket the object is located in.
 #' @param file The name of, or full path to, the local file to save the downloaded object in.
+#' @param prefix The prefix applied to the S3 object when uploaded (optional).
 #'
 #' @return A character vector containing the success message.
-precisely.aws.S3.get_object <- function(object, bucket, file) {
-  args <- c("s3", "cp", paste0("s3://", bucket, "/", object), file, "--no-progress")
+precisely.aws.S3.get_object <- function(object, bucket, file, prefix = NULL) {
+  s3_path <- paste0("s3://", bucket, "/")
+
+  if (!is.null(prefix)) {
+    s3_path <- paste0(s3_path, prefix, "/")
+  }
+
+  args <- c("s3", "cp", paste0(s3_path, object), file, "--no-progress")
 
   execute_aws_cmd(args)
 }
@@ -47,10 +61,17 @@ precisely.aws.S3.get_object <- function(object, bucket, file) {
 #'
 #' @param object The name of the S3 object to delete
 #' @param bucket The name of the S3 bucket the object is located in.
+#' @param prefix The prefix applied to the S3 object when uploaded (optional).
 #'
 #' @return A character vector containing the success message.
-precisely.aws.S3.delete_object <- function(object, bucket) {
-  args <- c("s3", "rm", paste0("s3://", bucket, "/", object))
+precisely.aws.S3.delete_object <- function(object, bucket, prefix = NULL) {
+  s3_path <- paste0("s3://", bucket, "/")
+
+  if (!is.null(prefix)) {
+    s3_path <- paste0(s3_path, prefix, "/")
+  }
+
+  args <- c("s3", "rm", paste0(s3_path, object))
 
   execute_aws_cmd(args)
 }
@@ -70,8 +91,14 @@ precisely.aws.S3.delete_object <- function(object, bucket) {
 #' @importFrom dplyr %>% bind_cols rename select
 #' @importFrom tibble rownames_to_column
 #' @importFrom tidyr gather spread
-precisely.aws.S3.list_objects <- function(bucket, recursive = TRUE) {
-  args <- c("s3", "ls", paste0("s3://", bucket), "--human-readable")
+precisely.aws.S3.list_objects <- function(bucket, recursive = TRUE, prefix = NULL) {
+  s3_path <- paste0("s3://", bucket)
+
+  if (!is.null(prefix)) {
+    s3_path <- paste0(s3_path, "/", prefix)
+  }
+
+  args <- c("s3", "ls", s3_path, "--human-readable")
 
   if (recursive) {
     args <- c(args, "--recursive")
