@@ -47,6 +47,10 @@ secretContents$username # The username
 secretContents$password # The password
 ```
 
+### AWS S3
+
+TODO
+
 [instance profile]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-ec2_instance-profiles.html
 [instance metadata]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/iam-roles-for-amazon-ec2.html#instance-metadata-security-credentials
 [AWS Secrets Manager]: https://docs.aws.amazon.com/secretsmanager/latest/userguide/manage_create-basic-secret.html
